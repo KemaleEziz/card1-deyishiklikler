@@ -4,28 +4,46 @@ import Logo from "../Card2/Logo.svg";
 //css
 import "./Card2.css";
 import Store from "../../context/store";
+import { Grid } from "@mui/material";
 
 const Card2 = ({ card }) => {
-  console.log("card",card);
-  const { cardData} = useContext(Store);
+  console.log("card", card);
+  const { cardData } = useContext(Store);
   const { selectedFile, setSelectedFile, fileDataURL, setFileDataURL } =
-  useContext(Store);
+    useContext(Store);
+
+  
+
+  const contactAddressValue = cardData.address
+    ? cardData.address.slice(0, 15)
+    : card?.addressText[0].text;
+
+    const contactPhoneValue = cardData.phone
+  ? cardData.phone.slice(0, 15)
+  : card?.addressText[1].text;
+
+  const contactEmailValue = cardData?.email
+    ? cardData.email.slice(0, 15)
+    : card?.addressText[2].text;
+
+  const contactWebsiteValue = cardData?.website
+    ? cardData.website
+    : cardData?.website?.length == 0
+    ? " "
+    : card.contactList?.[3].text;
+
+    console.log('contactWebsiteValue',contactWebsiteValue );
+
   return (
-    <div className="cards">
+    <Grid className="cards" columns={{ xs: 1, sm: 2, }} container justifyContent="center">
       {/* first card */}
-      <div
+      <Grid
         className={card.firstCardContent.firstCardBlog}
-        // className={card.firstCardContent.firstCard}
-        // style={{
-        //   backgroundImage: `url(${card.firstCardContent.backGroundImage})`,
-        // }}
       >
         <img
           src={card.firstCardContent.backGroundImage}
           className={card.firstCardContent.firstCard}
         />
-
-       
 
         <div className="design-div">
           <img className="logo-img" src={`${fileDataURL || Logo}`} />
@@ -35,30 +53,27 @@ const Card2 = ({ card }) => {
               : card.firstCardContent.companyNameText}
           </h3>
           <p className={card.firstCardContent.companyNameSlogan}>
-            {cardData.companySlogan
-              ? cardData.companySlogan.slice(0, 15)
+            {cardData?.slogan
+              ? cardData?.slogan
+              : cardData.slogan?.length == 0
+              ? ""
               : card.firstCardContent.companyNameSloganText}
           </p>
-         
         </div>
         <div className={card.firstCardContent.companyNameLoremTextBox}>
-          {/* new classname */}
-        <p className={card.firstCardContent.companyNameLoremText}>
+          <p className={card.firstCardContent.companyNameLoremText}>
             {cardData.description
-              ? cardData.description.slice(0, 15)
+              ? cardData.description
+              : cardData.description?.length == 0
+              ? ""
               : card.firstCardContent.companyNameLoremTextContent}
           </p>
-          </div>
-      </div>
+        </div>
+      </Grid>
 
       {/* second card */}
-      <div
+      <Grid
         className={card.secondCardContent.secondCardBlog}
-
-        // className={card.secondCardContent.secondCard}
-        // style={{
-        //   backgroundImage: `url(${card?.secondCardContent.backGroundImage})`,
-        // }}
       >
         <img
           src={card.secondCardContent.backGroundImage}
@@ -68,19 +83,19 @@ const Card2 = ({ card }) => {
         <div className="company-info">
           <div className={card.secondCardContent.flexClassName}>
             <h2 className={card.secondCardContent.cardHolderName}>
-              {cardData.name
-                ? cardData.name.slice(0, 15)
+              {cardData.firstName
+                ? cardData.firstName.slice(0, 15)
                 : card.secondCardContent.cardHolderNameText}
             </h2>
             <span className={card.secondCardContent.cardHolderSurname}>
-              {cardData.surname
-                ? cardData.surname.slice(0, 15)
+              {cardData.lastName
+                ? cardData.lastName.slice(0, 15)
                 : card.secondCardContent.cardHolderSurnameText}
             </span>
           </div>
           <p className={card.secondCardContent.cardHolderOccupation}>
-            {cardData.position
-              ? cardData.position.slice(0, 15)
+            {cardData.title
+              ? cardData.title.slice(0, 15)
               : card.secondCardContent.cardHolderOccupationText}
           </p>
         </div>
@@ -88,51 +103,39 @@ const Card2 = ({ card }) => {
           <div className="diviconlist">
             {card.iconList.map((v) => {
               return (
-                <>
-                  <div key={v.id} />
+                <div
+                  key={v.id}
+                  style={{
+                    display:
+                      v.id === 1 && contactAddressValue
+                        ? "block"
+                        : v.id === 2 && contactPhoneValue
+                        ? "block"
+                        : v.id === 3 && contactEmailValue
+                        ? "block"
+                        : v.id === 4 && contactWebsiteValue
+                        ? "block"
+                        : "none",
+                  }}
+                >
                   <div className={`${v.className}`}>{v.icon}</div>
-                </>
+                </div>
               );
             })}
           </div>
-
-          {/* <div className="fonticon">
-            {card.addressText.map((v) => {
-              return (
-                <>
-
-                
-                  <div key={v.id} />
-                  <p className={v.className}>{v.text}</p>
-                </>
-              );
-            })}
-          </div> */}
           <div>
             <p className={card.addressText[0].className}>
-              {cardData.address
-                ? cardData.address.slice(0, 15)
-                : card?.addressText[0].text}
+              {contactAddressValue}
             </p>
-            <p className={card.addressText[1].className}>
-              {cardData.phone
-                ? cardData.phone.slice(0, 15)
-                : card.addressText[1].text}
-            </p>
-            <p className={card.addressText[2].className}>
-              {cardData?.email
-                ? cardData.email.slice(0, 15)
-                : card?.addressText[2].text}
-            </p>
+            <p className={card.addressText[1].className}>{contactPhoneValue}</p>
+            <p className={card.addressText[2].className}>{contactEmailValue}</p>
             <p className={card.addressText[3].className}>
-              {cardData?.website
-                ? cardData.website.slice(0, 15)
-                : card?.addressText[3].text}
+              {contactWebsiteValue}
             </p>
           </div>
         </div>
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 

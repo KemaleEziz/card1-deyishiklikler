@@ -17,15 +17,16 @@ import { useState } from "react";
 import {
   FaArrowPointer,
   FaEnvelope,
+  FaFontAwesome,
   FaLocationDot,
   FaPhone,
 } from "react-icons/fa6";
 import Card1 from "./components/Cards/Card1/Card1";
 import Card2 from "./components/Cards/Card2/Card2";
 import Card3 from "./components/Cards/Card3/Card3";
-
-
-
+import Alboms from "./components/alboms/alboms";
+ import CardFirst from './components/Cards/Card3/CardFirst.png';
+ import CardSecond from './components/Cards/Card3/CardSecond.png';
 function App() {
   const [selectedCard, setSelectedCard] = useState(0);
   const [cardData, setCardData] = useState([]);
@@ -131,7 +132,7 @@ function App() {
         companyName: "company-name",
         companyNameText: "Design",
         companyNameSlogan: "slogan1",
-        companyNameSloganText: "Tagline space",
+        companyNameSloganText: "Tagline-space",
         companyNameLoremText: "down-part-lorem2",
         companyNameLoremTextContent: "Lorem Ipsum Dolor",
         companyNameLoremTextBox:'company-name-lorem-text-box',
@@ -195,7 +196,7 @@ function App() {
         {
           id: 4,
           className: "fa-arrow-pointer",
-          icon: <FaArrowPointer />,
+          icon:  <FaArrowPointer />,
         },
       ],
     },
@@ -203,6 +204,8 @@ function App() {
 
     {
       firstCardContent: {
+        firstCardBlog:'first-card-blog',
+        backGroundImage:`../..${CardFirst}`,
         companyName: "company-name",
         companyNameText: "Design",
         companyNameSlogan: "slogan",
@@ -212,6 +215,8 @@ function App() {
       },
 
       secondCardContent: {
+        secondCardBlog:'second-card-blog',
+        backGroundImage:`../..${CardSecond}`,
         divClassName: "name-class",
         cardHolderName: "card-holder-namee",
         cardHolderNameText: "MARK",
@@ -274,19 +279,8 @@ function App() {
 
   return (
     <>
-      {/* {cards2.map((item, i) => (
-        <Card2 key={i} card={item} />
-      ))}
-
-      {cards3.map((item, i) => (
-        <Card3 key={i} card3={item} />
-      ))} */}
-      {/* <Button variant="contained" component="label">
-        Upload File
-        <input type="file" hidden />
-      </Button> */}
-      
-      <Store.Provider
+     
+       <Store.Provider
         value={{flexDirection,setFlexDirection,name,setName,fontSize,setFontSize,selectedCard,
            setSelectedCard,fileDataURL, setFileDataURL, cards, cardData, setCardData}}
       >
@@ -294,14 +288,13 @@ function App() {
           <Routes>
             <Route path="/" element={<Form/>} />
             <Route
-              path="/Card1"
-              element={<Card1 card={cards[selectedCard]} />}
+              path="/Alboms"
+              element={<Alboms card={cards[selectedCard]} />}
             />
-            <Route path="/card2" element={<Card2 card={cards[1]} />}></Route>
-            <Route path="/card3" element={<Card3 card={cards[2]} />}></Route>
+          
           </Routes>
         </BrowserRouter>
-      </Store.Provider>
+      </Store.Provider> 
       
     </>
   );

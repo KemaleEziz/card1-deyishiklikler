@@ -1,0 +1,16 @@
+.alboms{
+    background-image: url('../alboms/albom-backgrund-picture.jpg') !important;
+    background-size: cover;
+}
+
+/* .print-header-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+} */
+
+.cards-box {
+    padding-top: 100px;
+    overflow: hidden;
+}

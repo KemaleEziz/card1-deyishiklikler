@@ -38,6 +38,7 @@
     transform: translate(0px, -140px);
     text-align: center;
     font-size: 11px;
+   
   }
   
   
@@ -163,4 +164,7 @@
 }
 .second-card-blog{
   height: 230px;
+}
+.Tagline-space{
+  
 }

@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import "./Form.css";
 import { Grid } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
+import { fields } from "../../components/constants";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
@@ -12,7 +13,11 @@ import Store from "../../components/context/store";
 import Card2 from "../../components/Cards/Card2/Card2";
 import Card3 from "../../components/Cards/Card3/Card3";
 import Card1 from "../../components/Cards/Card1/Card1";
-import Print from '../../components/Print'
+import { useFormik } from "formik";
+import Print from "../../components/Print";
+import { validationSchema } from "../../validation/Validation";
+import { useNavigate } from "react-router-dom";
+
 function Form() {
   const {
     cardData,
@@ -28,17 +33,12 @@ function Form() {
     selectedFile,
     setSelectedFile,
     setSlogan,
-   setFlexDirection,
-    
+    setFlexDirection,
   } = useContext(Store);
-  const [animateCard1, setAnimateCard1] = useState(false);
- 
-  // const [selectData, setSelectData] = useState([]);
-  const firstRef = useRef();
-  // const card1Ref = useRef();
-  const frontComponentRef = useRef();
 
-  // Array(100).fill(null).map
+  const firstRef = useRef();
+  const navigate = useNavigate();
+  const frontComponentRef = useRef();
   const [cardList, setCardList] = useState([
     {
       projectName: "Card1",
@@ -53,175 +53,66 @@ function Form() {
       progectBgColor: "yellow",
     },
   ]);
-  const [message, setMessage] = useState("");
-  const templateBox = useRef(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if( e.target.companyName.value.length>=4){
-      setFlexDirection(true)
-     } 
-    const file = e.target.logo.files[0];
-
-    if (file) {
-      const blobURL = URL.createObjectURL(file);
-      setFileDataURL(blobURL);
-    }
-    
-    // if()
-
-    const cardInformation = {
-      name: e.target.name.value,
-      surname: e.target.surname.value,
-      companyName: e.target.companyName.value,
-      companySlogan: e.target.companySlogan.value,
-      address: e.target.address.value,
-      phone: e.target.phone.value,
-      email: e.target.email.value,
-      website: e.target.website.value,
-      description: e.target.description.value,
-      position: e.target.position.value,
-    };
-
-
-    if (  e.target.name.value.length >= 10) {
-      setName(e.target.name.value);
-      // setFlexDirection(true)
-    } else {
-      setFontSize(15); 
-     
-    }
-   
-    
-    //   setFontSize(5)
-    //   setName(name);
-    //  }else {
-    //   setFontSize(9);
-    //   // Truncate the input value to the first 10 characters
-    //    setName(name.substring(0, 10));
-    // }
-
-    
-
-
-    //  if(cardInformation.surname.length>10){
-    // fontSize:(fontSize+'px').replace(/[^0-9.]/,"")
-      
-    //  }
-    //  if(cardInformation.companySlogan.length>10){
-    //   setFontSize(3)
-    //  }
-    
-  
-
-
-    //  setCardData([...cardData,cardInformation]) keohne datalari saxlamaq shertile
-    // yeni dtalari yazdirmaq istedikde spread metodu 
-
-    setCardData(cardInformation); //2ci metod
-    setAnimateCard1(true);
-    setTimeout(() => {
-      setAnimateCard1(false);
-    }, 2000);
-  };
-
-  const fieldInfo = [
-    {
-      name: "name",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Name",
-      ref: { firstRef },
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      middleName: "",
+      companyName: "",
+      slogan: "",
+      description: "",
+      address: "",
+      phoneNumber: "",
+      email: "",
+      website: "",
+      title: "",
     },
-    {
-      name: "surname",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Surname",
-      ref: { firstRef },
+    validate(values) {
+      const errors = {};
+
+      if (!values.email) {
+        errors.email = "Email field is required!";
+      } else if (
+        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+      ) {
+        errors.email = "Email must be valid!";
+      }
+
+      return errors;
     },
-    {
-      name: "position",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Position",
-      ref: { firstRef },
+    onSubmit: (values) => {
+      console.log("ds");
+      console.log(JSON.stringify(values));
+      localStorage.setItem("dataKey", JSON.stringify(values));
+      setCardData(values);
+      navigate("/Alboms");
     },
-    {
-      name: "companyName",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Company name",
-      ref: { firstRef },
-    },
-    {
-      name: "companySlogan",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Slogan",
-      ref: { firstRef },
-    },
-    {
-      name: "description",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Description",
-      ref: { firstRef },
-    },
-    {
-      name: "address",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Address",
-      ref: { firstRef },
-    },
-    {
-      name: "phone",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Phone",
-      ref: { firstRef },
-      autoComplete: "current-phone",
-    },
-    {
-      name: "email",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Email",
-      ref: { firstRef },
-      autoComplete: "current-email",
-      type: "email",
-    },
-    {
-      name: "website",
-      size: "small",
-      variant: "outlined",
-      placeholder: "Website",
-      ref: { firstRef },
-      autoComplete: "Website",
-    },
-  ];
+    validationSchema: validationSchema,
+  });
 
   const handleChange = (e) => {
     let id = e.target.value;
     setSelectedCard(id);
   };
-
-
-
+  const change = (name, e) => {
+    e.persist();
+    handleChange(e);
+    setFieldTouched(name, true, false);
+  };
   return (
     <>
-      <div >
+      <div>
         <Grid container className="visaPageBox">
           <Grid item xs={11} md={6} className="left-box">
-            <h2
+            <h1
               className="left-header"
-              style={{ color: "#208E2B", marginBottom: "20px" }}
+              style={{ color: "#1e73e3", marginBottom: "20px" }}
             >
               Add your information
-            </h2>
+            </h1>
             <Box
-              onSubmit={handleSubmit}
+              onSubmit={formik.handleSubmit}
               component="form"
               sx={{
                 "& .MuiTextField-root": { m: 1, width: "50ch" },
@@ -229,140 +120,55 @@ function Form() {
               noValidate
               autoComplete="off"
             >
-              {fieldInfo.map((field,i) => (
+              {fields.map((field, i) => (
                 <TextField
                   name={field.name}
                   size={field.size}
-                  variant={field.variant}
+                  value={formik.values[field.name]}
+                  onChange={formik.handleChange}
+                  variant="standard"
                   placeholder={field.placeholder}
                   type={field.type}
                   key={i}
-                  // inputProps={{ maxLength:10}}
-                 
+                  ref={firstRef}
+                  error={
+                    formik.touched[field.name] &&
+                    Boolean(formik.errors[field.name])
+                  }
+                  helperText={
+                    formik.touched[field.name] && formik.errors[field.name]
+                  }
                 />
               ))}
 
-              
               <Box>
                 <input type="file" name="logo" />
               </Box>
-
               <Button
-                style={{ marginTop: "20px" }}
+                style={{ marginTop: "20px", marginBottom: "20px" }}
                 size="large"
                 id="choose-button"
                 type="submit"
-                variant="contained"
+                variant="outlined"
                 sx={{
-                  width: "250px",
+                  width: "350px",
                   height: "45px",
-                  bgcolor: "#208E2B",
+                  color: "#995D81",
                   display: "block",
                   borderRadius: "20px",
+                  fontWeight: "900",
                   mt: 5,
                   m: "auto",
                   transition: ".3s linear",
                   "&:hover": {
-                    bgcolor: "brown",
+                    bgcolor: "#1e73e3",
+                    color: "white",
                   },
                 }}
               >
-                Submit
+                Generate Your Business card
               </Button>
             </Box>
-          </Grid>
-
-          <Grid item xs={11} md={6} className="right-box">
-            <div className="right-header">
-              <h2 style={{ color: "#208E2B", marginBottom: "20px" }}>
-                Choose business card{" "}
-              </h2>
-            </div>
-            <div>
-              
-              <Select
-                size="small"
-                labelId="demo-controlled-open-select-label"
-                id="demo-controlled-open-select"
-                label="Choose select"
-                onChange={handleChange}
-                sx={{ m: 1, minWidth: 400 }}
-              >
-                <MenuItem selected value={null}>
-                  <em>None</em>
-                </MenuItem>
-                {cardList.map((item, index) => {
-                  return (
-                    <MenuItem key={Math.random()} value={index}>
-                      {item.projectName}{" "}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </div>
-
-            <Grid>
-              {selectedCard == null && (
-                <>
-                  <Box
-                    sx={{
-                      width: 400,
-                      height: 230,
-                      margin: "auto",
-                      marginTop: "20px",
-                      borderRadius: "20px",
-                      backgroundColor: "#ECECEC",
-                      "&:hover": {
-                        backgroundColor: "#D5D5D5",
-                        opacity: [0.9, 0.8, 0.7],
-                      },
-                    }}
-                  />
-                </>
-              )}
-            </Grid>
-
-            <Grid>
-              {selectedCard == null && (
-                <>
-                  <Box
-                    sx={{
-                      width: 400,
-                      height: 230,
-                      margin: "auto",
-                      marginTop: "20px",
-                      borderRadius: "20px",
-                      backgroundColor: "#ECECEC",
-                      "&:hover": {
-                        backgroundColor: "#D5D5D5",
-                        opacity: [0.9, 0.8, 0.7],
-                      },
-                    }}
-                  />
-                </>
-              )}
-            </Grid>
-
-            <Grid ref={frontComponentRef}>
-              {selectedCard == 0 && (
-                <Card1
-                  card={cards[0]}
-                  cardData={cardData}
-                  width="300px"
-                  animateCard1={animateCard1}
-                  
-                />
-              )}
-              {selectedCard === 1 && (
-                <Card2 card={cards[1]} cardData={cardData} />
-              )}
-              {selectedCard === 2 && (
-                <Card3 card3={cards[2]} cardData={cardData} />
-              )}
-            </Grid>
-            <div>
-              <Print cards={cards}  ref={{ frontComponentRef }} />
-            </div>
           </Grid>
         </Grid>
       </div>

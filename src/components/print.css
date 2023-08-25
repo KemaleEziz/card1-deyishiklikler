@@ -1,12 +1,12 @@
-/* PrintPage.css */
+
 .print-content {
     width: 400px;
     height: 230px;
-    background-color: #ffffff; /* White background for printing */
+    background-color: #ffffff; 
     padding: 20px;
   }
   
-  /* Media query for print styles */
+ 
   @media print {
     .print-content {
       width: 400px;
@@ -15,7 +15,16 @@
       padding: 20px;
     }
   
-    /* Additional print-specific styles can be added here */
+  
+  }
+  .right-header{
+    text-align: center;
+  }
+  .print-buttons{
+    display: flex;
+    justify-content: space-between !important;
+    width: 300px;
+
   }
  
   
